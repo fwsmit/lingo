@@ -2,6 +2,8 @@ import tkinter
 import random
 import tkinter.messagebox
 from tkinter import font as tkFont
+from playsound import playsound
+import threading
 import time
 
 class Lingo:
@@ -161,6 +163,9 @@ def create_main_window():
 
     return Lingo
 
+def playsound_async(sound):
+    threading.Thread(target=playsound, args=(sound,), daemon=True).start()
+
 def show_word(L, lingo, word, row, delay=False):
         kleuren = L.kleur_code(word)   
         for i in range(len(word)):
@@ -173,7 +178,13 @@ def show_word(L, lingo, word, row, delay=False):
             letter.maak_knop(lingo, backgr, word[i].upper(), row = row, column=i)
             if delay:
                 lingo.update()
-                time.sleep(0.1)
+                if kleuren[i] == "G":
+                    playsound_async("sound/Beep (goed).wav")
+                elif kleuren[i] == "B":
+                    playsound_async("sound/Beep (fout).wav")
+                else:
+                    playsound_async("sound/Beep (half goed).wav")
+                time.sleep(0.2)
 
         return kleuren
 
