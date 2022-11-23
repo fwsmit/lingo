@@ -161,7 +161,7 @@ def create_main_window():
 
     return Lingo
 
-def show_word(L, lingo, word, row):
+def show_word(L, lingo, word, row, delay=False):
         kleuren = L.kleur_code(word)   
         for i in range(len(word)):
             if kleuren[i] == "G":
@@ -170,8 +170,10 @@ def show_word(L, lingo, word, row):
                 backgr = '#1673c7'
             else:
                 backgr = "#d4b83d"
-            #time.sleep(1)
             letter.maak_knop(lingo, backgr, word[i].upper(), row = row, column=i)
+            if delay:
+                lingo.update()
+                time.sleep(0.1)
 
         return kleuren
 
@@ -186,7 +188,7 @@ def main():
         L.chose_word()
         letter.clear(lingo)
         first_letter = L.antwoord[0]
-        show_word(L, lingo, first_letter+" "*(L.len-1), 0)
+        show_word(L, lingo, first_letter+" "*(L.len-1), 0, delay=False)
         row = 0
         while win is False:
             invoer = False
@@ -199,7 +201,7 @@ def main():
                 else:
                     invoer = True
 
-            kleuren = show_word(L, lingo, isn, row)
+            kleuren = show_word(L, lingo, isn, row, delay=True)
 
             print(kleuren)
             row += 1
