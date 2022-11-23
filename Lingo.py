@@ -106,6 +106,10 @@ class letter:
         button.grid(row=row, column=column)
         border_color.grid(row=row, column=column)
 
+    @staticmethod
+    def clear(window):
+        for widget in window.winfo_children():
+            widget.destroy()
     
     def click(self):
         pass
@@ -165,6 +169,7 @@ def main():
         win = False
         L.chose_len()
         L.chose_word()
+        letter.clear(lingo)
         first_letter = L.antwoord[0]
         show_word(L, lingo, first_letter+" "*(L.len-1), 0)
         row = 0
