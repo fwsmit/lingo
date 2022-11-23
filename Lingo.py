@@ -218,6 +218,7 @@ def main():
             row += 1
             if L.correct(kleuren):
                 win = True
+                playsound_async("sound/Lingo Goed Word.mp3")
         #tkinter.messagebox.showinfo("wow! je hebt het goed :D")
 
         print("op naar een nieuw potje")
