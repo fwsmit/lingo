@@ -165,6 +165,8 @@ def main():
         win = False
         L.chose_len()
         L.chose_word()
+        first_letter = L.antwoord[0]
+        show_word(L, lingo, first_letter+" "*(L.len-1), 0)
         row = 0
         while win is False:
             invoer = False
