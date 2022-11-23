@@ -9,17 +9,17 @@ import time
 class Lingo:
 
     def __init__(self) -> None:
-        self.five_word: list[str] = self.import_words("targets.txt")
-        self.six_word: list[str] = self.import_words("targets.txt")
-        self.seven_word: list[str] = self.import_words("targets.txt")
-        self.ten_word: list[str] = self.import_words("targets.txt")
+        self.five_word: list[str] = self.import_words("targets.txt", 5)
+        self.six_word: list[str] = self.import_words("targets.txt", 6)
+        self.seven_word: list[str] = self.import_words("targets.txt", 7)
+        self.ten_word: list[str] = self.import_words("targets.txt", 10)
         self.al_gekozen: list[str] = []
         self.antwoord: str = ""
         self.len: int = 5
 
-    def import_words(self, filename: str) -> list[str]:
+    def import_words(self, filename: str, length) -> list[str]:
         with open(filename) as file:
-            return [word.strip() for word in file]
+            return [word.strip() for word in file if len(word.strip()) == length]
     
     def chose_word(self) -> None:
         if self.len == 5:
