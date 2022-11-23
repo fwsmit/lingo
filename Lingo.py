@@ -174,6 +174,8 @@ def main():
                 isn = input("Guess: " )
                 if len(isn) != L.len:
                     print(f"dat woord is niet {L.len} lang, foei\n Probeer maar opnieuw")
+                elif isn[0] != first_letter:
+                    print(f"Eerste letter komt niet overeen")
                 else:
                     invoer = True
 
