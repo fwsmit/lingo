@@ -38,8 +38,23 @@ class Lingo:
         self.antwoord = "".join(word)
 
     def kleur_code(self, guess: str) -> str:
-        return "".join(["G" if self.antwoord[i] == guess[i] else "Y" if guess[i] in self.antwoord 
-                        else "B" for i in range(len(guess))])
+        antwoord = list(self.antwoord)
+        kleuren = list("B"*self.len)
+        for i in range(self.len):
+            if antwoord[i] == guess[i]:
+                kleuren[i] = "G"
+                antwoord[i] = "*"
+
+        for i in range(self.len):
+            if kleuren[i] != "G":
+                try:
+                    index = antwoord.index(guess[i])
+                    antwoord[index] = "*"
+                    kleuren[i] = "Y"
+                except ValueError:
+                    pass
+
+        return "".join(kleuren)
 
     def correct(self, kleuren: str) -> bool:
         return all(x == "G" for x in kleuren)
