@@ -171,7 +171,7 @@ def create_main_window():
 def playsound_async(sound):
     threading.Thread(target=playsound, args=(sound,), daemon=True).start()
 
-def show_word(L, lingo, word, row, delay=False):
+def show_word(L, lingo, word, row, delay=False, sound=False):
         kleuren = L.kleur_code(word)   
         for i in range(len(word)):
             if kleuren[i] == "G":
@@ -183,12 +183,13 @@ def show_word(L, lingo, word, row, delay=False):
             letter.maak_knop(lingo, backgr, word[i].upper(), row = row, column=i)
             if delay:
                 lingo.update()
-                if kleuren[i] == "G":
-                    playsound_async("sound/Beep (goed).wav")
-                elif kleuren[i] == "B":
-                    playsound_async("sound/Beep (fout).wav")
-                else:
-                    playsound_async("sound/Beep (half goed).wav")
+                if sound:
+                    if kleuren[i] == "G":
+                        playsound_async("sound/Beep (goed).wav")
+                    elif kleuren[i] == "B":
+                        playsound_async("sound/Beep (fout).wav")
+                    else:
+                        playsound_async("sound/Beep (half goed).wav")
                 time.sleep(0.2)
 
         return kleuren
@@ -239,8 +240,8 @@ def main():
         L.chose_len()
         L.chose_word()
         letter.clear(lingo)
+        print("Antwoord:", L.antwoord)
         if L.len == 10:
-            print(L.antwoord)
             freeze = [False] * 10
             iets = list(L.antwoord)
             random.shuffle(iets)
@@ -248,7 +249,7 @@ def main():
 
             while win is False:
                 iets = "".join(iets)
-                kleuren = show_word(L, lingo, iets, 0, True)
+                kleuren = show_word(L, lingo, iets, 0, delay=True)
                 time.sleep(1)
                 freeze = [kleur == "G" for kleur in kleuren]
                 iets = list(iets)
@@ -282,14 +283,13 @@ def main():
                     else:
                         invoer = True
 
-                kleuren = show_word(L, lingo, isn, row, delay=True)
+                kleuren = show_word(L, lingo, isn, row, delay=True, sound=True)
 
                 print(kleuren)
                 row += 1
                 if L.correct(kleuren):
                     win = True
                     playsound_async("sound/Lingo Goed Word.mp3")
-                    tkinter.messagebox.showinfo(title="Axif Lingo", message= "wow! je hebt het goed :D")
                     break
 
                 next_row = "".join([isn[i] if kleuren[i] == "G" else "." for i in range(len(isn))])
