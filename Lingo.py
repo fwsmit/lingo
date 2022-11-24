@@ -98,8 +98,8 @@ class letter:
 
     @staticmethod
     def gele_circel(window, row, column, tekst, helv36):
-        border_color = tkinter.Frame(window, highlightbackground = BG_COLOR, highlightthickness = 2, bd=0)
-        c= tkinter.Canvas(window,width=160, height=160, bg=FG_COLOR, highlightthickness=2, highlightbackground=BG_COLOR, relief='flat')
+        border_color = tkinter.Frame(window, highlightbackground = BG_COLOR, highlightthickness = 3, bd=0)
+        c= tkinter.Canvas(window,width=160, height=160, bg=FG_COLOR, highlightthickness=0, highlightbackground=BG_COLOR, relief='flat')
         c.grid(row=row, column=column)
         #Draw an Oval in the canvas
         c.create_oval(3,3,159,159, fill = YELLOW_COLOR, outline="")
