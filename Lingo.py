@@ -203,6 +203,7 @@ def main():
         row = 0
         while win is False:
             invoer = False
+            print("Antwoord:", L.antwoord)
             while invoer is False:
                 isn = input("Guess: " )
                 if len(isn) != L.len:
