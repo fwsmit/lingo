@@ -6,6 +6,10 @@ from playsound import playsound
 import threading
 import time
 
+BG_COLOR = "#0A2E58"
+FG_COLOR = "#0952BB"
+YELLOW_COLOR = "#d4b83d"
+
 class Lingo:
 
     def __init__(self) -> None:
@@ -82,9 +86,9 @@ class letter:
 
     @staticmethod
     def maak_knop(window,backgr, tekst, row, column):
-        border_color = tkinter.Frame(window, highlightbackground = "#223e75", highlightthickness = 2, bd=0)
+        border_color = tkinter.Frame(window, highlightbackground = BG_COLOR, highlightthickness = 2, bd=0)
         helv36 = tkFont.Font(family='MS Sans Serif', size=56, weight='bold')
-        if backgr == "#d4b83d":
+        if backgr == YELLOW_COLOR:
             #window.after(1000,letter.gele_circel,window, row, column, tekst, helv36)
             letter.gele_circel(window, row, column, tekst, helv36)
         else:
@@ -94,18 +98,18 @@ class letter:
 
     @staticmethod
     def gele_circel(window, row, column, tekst, helv36):
-        border_color = tkinter.Frame(window, highlightbackground = "#223e75", highlightthickness = 2, bd=0)
-        c= tkinter.Canvas(window,width=160, height=160, bg='#1673c7', highlightthickness=2, highlightbackground="#223e75", relief='flat')
+        border_color = tkinter.Frame(window, highlightbackground = BG_COLOR, highlightthickness = 2, bd=0)
+        c= tkinter.Canvas(window,width=160, height=160, bg=FG_COLOR, highlightthickness=2, highlightbackground=BG_COLOR, relief='flat')
         c.grid(row=row, column=column)
         #Draw an Oval in the canvas
-        c.create_oval(3,3,159,159, fill = '#d4b83d', outline="")
+        c.create_oval(3,3,159,159, fill = YELLOW_COLOR, outline="")
         c.create_text(80, 80, text = tekst, font = helv36, fill='white')
         border_color.grid(row=row, column=column)
         
 
     @staticmethod
     def normale_knop(window, tekst, backgr, row, column):
-        border_color = tkinter.Frame(window, highlightbackground = "#223e75", highlightthickness = 3, bd=0)
+        border_color = tkinter.Frame(window, highlightbackground = BG_COLOR, highlightthickness = 3, bd=0)
         helv36 = tkFont.Font(family='MS Sans Serif', size=56, weight='bold')
         pixel = tkinter.PhotoImage(width=1, height=1)
         button = tkinter.Button(
@@ -127,6 +131,7 @@ class letter:
     def clear(window):
         for widget in window.winfo_children():
             widget.destroy()
+        window["bg"] = BG_COLOR
     
     def click(self):
         pass
@@ -172,9 +177,9 @@ def show_word(L, lingo, word, row, delay=False):
             if kleuren[i] == "G":
                 backgr = "#d33038"
             elif kleuren[i] == "B":
-                backgr = '#1673c7'
+                backgr = FG_COLOR
             else:
-                backgr = "#d4b83d"
+                backgr = YELLOW_COLOR
             letter.maak_knop(lingo, backgr, word[i].upper(), row = row, column=i)
             if delay:
                 lingo.update()
@@ -191,6 +196,7 @@ def show_word(L, lingo, word, row, delay=False):
 def main():
     L = Lingo()
     lingo = create_main_window()
+    letter.clear(lingo)
     #tkinter.messagebox.showwarning("showwarning", "Lingo gaat beginnen, ben je er klaar voor?")
     while True:
         #tkinter.messagebox.showwarning("showwarning", "LET'S GO")
