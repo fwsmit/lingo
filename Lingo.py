@@ -193,44 +193,109 @@ def show_word(L, lingo, word, row, delay=False):
 
         return kleuren
 
+def show_letter(L, lingo, row):
+    global win
+    global i
+    i += 1
+    show_word(L, lingo, L.antwoord[0:i]+" "*(L.len-i), row, delay=False)
+    if len(L.antwoord[0:i]+" "*(L.len-i)) >= L.len:
+        win = True
+
+def extra_letter_knop(L, lingo, row):
+    button = tkinter.Button(
+            lingo,
+            text="extra letter",
+            command = lambda: show_letter(L, lingo, row)
+        )
+    button.grid(row=0, column=L.len+1)
+
+def winnen():
+    global win
+    win = True
+
+def win_knop(L, lingo, row):
+    button = tkinter.Button(
+            lingo,
+            text="win",
+            command = winnen
+        )
+    button.grid(row=1, column=1)
+
+def tien_swirl_huilen(L, lingo, iets):
+    pass
+
+
 def main():
     L = Lingo()
     lingo = create_main_window()
     letter.clear(lingo)
     #tkinter.messagebox.showwarning("showwarning", "Lingo gaat beginnen, ben je er klaar voor?")
     while True:
-        #tkinter.messagebox.showwarning("showwarning", "LET'S GO")
+        global i
+        global win
+        i = 1
+        row = 0
         win = False
         L.chose_len()
         L.chose_word()
         letter.clear(lingo)
-        first_letter = L.antwoord[0]
-        show_word(L, lingo, first_letter+" "*(L.len-1), 0, delay=False)
-        row = 0
-        while win is False:
-            invoer = False
-            print("Antwoord:", L.antwoord)
-            while invoer is False:
-                isn = input("Guess: " )
-                if len(isn) != L.len:
-                    print(f"dat woord is niet {L.len} lang, foei\n Probeer maar opnieuw")
-                elif isn[0] != first_letter:
-                    print(f"Eerste letter komt niet overeen")
-                else:
-                    invoer = True
+        if L.len == 10:
+            print(L.antwoord)
+            freeze = [False] * 10
+            iets = list(L.antwoord)
+            random.shuffle(iets)
+            win_knop(L, lingo, row)
 
-            kleuren = show_word(L, lingo, isn, row, delay=True)
+            while win is False:
+                iets = "".join(iets)
+                kleuren = show_word(L, lingo, iets, 0, True)
+                time.sleep(1)
+                freeze = [kleur == "G" for kleur in kleuren]
+                iets = list(iets)
+                # memorize position of fixed elements
+                fixed = [(pos, item) for (pos,item) in enumerate(iets) if freeze[pos]]
+                # shuffle list
+                random.shuffle(iets)
+                # swap fixed elements back to their original position
+                for pos, item in fixed:
+                    index = iets.index(item)
+                    iets[pos], iets[index] = iets[index], iets[pos]
 
-            print(kleuren)
-            row += 1
-            if L.correct(kleuren):
-                win = True
-                playsound_async("sound/Lingo Goed Word.mp3")
-        #tkinter.messagebox.showinfo("wow! je hebt het goed :D")
+            show_word(L, lingo, L.antwoord, 1, delay=True)
+            playsound_async("sound/Lingo Goed Word.mp3")
+            tkinter.messagebox.showinfo(title="Axif Lingo", message= "wow! je hebt het goed :D")                
+
+        else:
+            first_letter = L.antwoord[0]
+            show_word(L, lingo, first_letter+" "*(L.len-1), 0, delay=False)
+            row = 0
+            extra_letter_knop(L, lingo, row)
+            
+            while win is False:
+                invoer = False
+                while invoer is False:
+                    isn = input("Guess: " )
+                    if len(isn) != L.len:
+                        print(f"dat woord is niet {L.len} lang, foei\n Probeer maar opnieuw")
+                    elif isn[0] != first_letter:
+                        print(f"Eerste letter komt niet overeen")
+                    else:
+                        invoer = True
+
+                kleuren = show_word(L, lingo, isn, row, delay=True)
+
+                print(kleuren)
+                row += 1
+                if L.correct(kleuren):
+                    win = True
+                    playsound_async("sound/Lingo Goed Word.mp3")
+                    tkinter.messagebox.showinfo(title="Axif Lingo", message= "wow! je hebt het goed :D")
+                    break
+
+                next_row = "".join([isn[i] if kleuren[i] == "G" else "." for i in range(len(isn))])
+                show_word(L, lingo, next_row, row , delay=True)
 
         print("op naar een nieuw potje")
-
-
 
 if __name__ == '__main__':
     main()
