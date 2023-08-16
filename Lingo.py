@@ -19,14 +19,6 @@ with open("targets.txt") as file:
     DATABASE = [word.strip() for word in file]
 
 
-def chose_word(words):
-    word = random.sample(DATABASE, 1)[0]
-    while word in words:
-        word = random.sample(DATABASE, 1)[0]
-    words.append(word)
-    return [x for x in word]
-
-
 def color_code(guess, word):
     colors = ["R", "B", "B", "B", "B", "B"]
     check_word = word.copy()
@@ -93,7 +85,7 @@ def pad_grid(root, row):
     for i in range(0, PADDING):
         c = tk.Canvas(
             root,
-            width=160,
+            width=180,
             height=160,
             bg=BG_COLOR,
             highlightthickness=0,
@@ -137,12 +129,12 @@ time.sleep(1)
 app.root.update()
 while True:
     used_words = []
-    word = chose_word(used_words)
+    word = [x for x in DATABASE.pop(random.randint(0, len(DATABASE)-1))]
     guess = [word[0], ".", ".", ".", ".", "."]
     turn = 1
-    print("Answer:", word)
+    print("Answer:", "".join(word))
     show_word(
-        app.root, guess, ["R", "B", "B", "B", "B", "B"], turn, mute=True, delay=False
+        app.root, guess, ["R", "B", "B", "B", "B", "B"], turn, mute=True, delay=True
     )
     app.root.update()
     while True:
@@ -163,6 +155,5 @@ while True:
             break
         w = "".join([word[i] if colors[i] == "R" else "." for i in range(len(guess))])
         show_word(app.root, w, color_code(w, word), turn, True, False)
-        turn += 1
         app.root.update()
     clear(app.root)
