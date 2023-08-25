@@ -3,9 +3,14 @@ import time
 import tkinter as tk
 import threading
 from tkinter import font as tkFont
-from playsound import playsound
+import playsound
 import pygame as pg
 
+print("\nHallo! Leuk dat je lingo gaat spelen. Dit is hoe het werkt:\n "
+      "Typ de guess van de spelers in en druk op enter, het programma doet de rest!\n"
+      "Als je een extra letter wilt laten zien aan de spelers, typ dan \"*\" en druk op enter.\n"
+      "Je kan F5 indrukken om fullscreen te toggelen.\n"
+      "Veel plezier!\n")
 
 WORD_LENGTH = 6
 BEEP_DELAY = 0.20
@@ -13,7 +18,7 @@ BG_COLOR = "#0A2E58"
 FG_COLOR = "#0952BB"
 RED_COLOR = "#d33038"
 YELLOW_COLOR = "#d4b83d"
-PADDING = 3
+PADDING = 2
 d = 1610 / (PADDING + 6)
 
 with open("targets.txt") as file:
@@ -106,12 +111,18 @@ class Lingo(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self.root = None
+        self.fullscreen = False
         self.start()
+
+    def toggle_fullscreen(self, event=None):
+        self.fullscreen = not self.fullscreen
+        self.root.attributes("-fullscreen", self.fullscreen)
 
     def run(self):
         self.root = tk.Tk()
+        self.root.bind("<F5>", self.toggle_fullscreen)
         self.root.title("Blik Bier Lingo")
-        self.root.attributes("-fullscreen", True)
+        self.root.attributes("-fullscreen", self.fullscreen)
         self.root["bg"] = BG_COLOR
         self.root.mainloop()
 
@@ -129,6 +140,7 @@ def game():
     app = Lingo()
     time.sleep(1)
     app.root.update()
+    goOn = False
     while True:
         used_words = []
         word = [x for x in DATABASE.pop(random.randint(0, len(DATABASE) - 1))]
@@ -137,13 +149,19 @@ def game():
         turn = 1
         print("Answer:", ("".join(word)).replace(chr(131), "ij"))
         show_word(
-            app.root, guess, color_code(guess, word), turn, mute=True, delay=False
+            app.root, red_word, color_code(red_word, word), turn, mute=True, delay=False
         )
         app.root.update()
         while True:
             while True:
                 guess = input("Guess: ")
                 guess = guess.replace("ij", chr(131)).replace("ij", chr(131))
+                if guess == '*':
+                    ind = red_word.index('.')
+                    red_word[ind] = word[ind]
+                    blue_beep.play()
+                    show_word(app.root, red_word, ["B", "B", "B", "B", "B", "B"], turn, mute=True, delay=False)
+                    continue
                 if len(guess) != 6:
                     print(f"dat woord is niet 6 lang, foei. ga je schamen")
                 else:
@@ -152,8 +170,6 @@ def game():
             red_word = [
                 guess[i] if colors[i] == "R" else red_word[i] for i in range(len(guess))
             ]
-            # show_word(app.root, ["", "", "", "", "", ""], ["B", "B", "B", "B", "B", "B"], turn, True, False)
-            # time.sleep(0.1)
             show_word(app.root, guess, colors, turn, False, True)
             turn += 1
             if all(x == "R" for x in colors):
@@ -172,8 +188,8 @@ def game():
                 print("Press enter to play again")
                 input()
                 break
-            # app.root.update()
         clear(app.root)
 
 
 game()
+
